@@ -1,11 +1,11 @@
-import AddUserForm from './AddUserForm'
+import CreateNiyaForm from './CreateNiyaForm'
 
-const AddUserPage = () => (
+const CreateNiyaPage = () => (
   <div className='flex min-h-screen flex-col'>
     <div className='flex-grow rounded-sm bg-gray-200 p-8 shadow-md'>
-      <AddUserForm />
+      <CreateNiyaForm />
     </div>
   </div>
 )
 
-export default AddUserPage
+export default CreateNiyaPage

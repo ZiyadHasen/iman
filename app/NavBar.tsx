@@ -20,8 +20,8 @@ const NavBar = () => {
     { label: 'All Members', href: '/allMembers', icon: <IoIosPeople /> },
     { label: 'Add User', href: '/addUser', icon: <RiUserAddFill /> },
     {
-      label: 'Create Pledge',
-      href: '/createPledge',
+      label: 'Create Niya',
+      href: '/createNiya',
       icon: <FaHandHoldingDollar />,
     },
     { label: 'Pick Operator', href: '/pickOperator', icon: <IoPersonCircle /> },

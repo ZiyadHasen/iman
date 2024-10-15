@@ -37,7 +37,7 @@ export default function RootLayout({
               <NavBar />
             </aside>
 
-            <main className='col-span-4 p-4'>{children}</main>
+            <main className='col-span-4 p-5'>{children}</main>
           </div>
         </Theme>
       </body>
