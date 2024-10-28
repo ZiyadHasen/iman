@@ -17,17 +17,29 @@ const NavBar = () => {
   const currentPath = usePathname()
   const links = [
     { label: 'Dashboard', href: '/', icon: <IoMdHome /> },
-    { label: 'All Members', href: '/allMembers', icon: <IoIosPeople /> },
-    { label: 'Add User', href: '/addUser', icon: <RiUserAddFill /> },
+    { label: 'All Members', href: '/pages/allMembers', icon: <IoIosPeople /> },
+    { label: 'Add User', href: '/pages/addUser', icon: <RiUserAddFill /> },
     {
       label: 'Create Niya',
-      href: '/createNiya',
+      href: '/pages/createNiya',
       icon: <FaHandHoldingDollar />,
     },
-    { label: 'Pick Operator', href: '/pickOperator', icon: <IoPersonCircle /> },
-    { label: 'Schedule Call', href: '/scheduleCall', icon: <IoCall /> },
-    { label: 'User Payment', href: '/userPayment', icon: <FaCommentDollar /> },
-    { label: 'Approve Payment', href: '/approvePayment', icon: <MdVerified /> },
+    {
+      label: 'Pick Operator',
+      href: '/pages/pickOperator',
+      icon: <IoPersonCircle />,
+    },
+    { label: 'Schedule Call', href: '/pages/scheduleCall', icon: <IoCall /> },
+    {
+      label: 'User Payment',
+      href: '/pages/userPayment',
+      icon: <FaCommentDollar />,
+    },
+    {
+      label: 'Approve Payment',
+      href: '/pages/approvePayment',
+      icon: <MdVerified />,
+    },
   ]
 
   return (
