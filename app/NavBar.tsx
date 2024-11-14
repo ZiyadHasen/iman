@@ -1,46 +1,22 @@
 'use client'
-import { Button, Heading } from '@radix-ui/themes'
+import {
+  Avatar,
+  Box,
+  Button,
+  DropdownMenu,
+  Heading,
+  Text,
+} from '@radix-ui/themes'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
 import classNames from 'classnames'
-import { IoIosPeople } from 'react-icons/io'
-import { RiUserAddFill } from 'react-icons/ri'
-import { IoMdHome } from 'react-icons/io'
-import { FaHandHoldingDollar } from 'react-icons/fa6'
-import { IoPersonCircle } from 'react-icons/io5'
-import { IoCall } from 'react-icons/io5'
-import { FaCommentDollar } from 'react-icons/fa6'
-import { MdVerified } from 'react-icons/md'
+import { useSession } from 'next-auth/react'
+import { links } from '@/assets/NavLinks'
 
 const NavBar = () => {
   const currentPath = usePathname()
-  const links = [
-    { label: 'Dashboard', href: '/', icon: <IoMdHome /> },
-    { label: 'All Members', href: '/pages/allMembers', icon: <IoIosPeople /> },
-    { label: 'Add User', href: '/pages/addUser', icon: <RiUserAddFill /> },
-    {
-      label: 'Create Niya',
-      href: '/pages/createNiya',
-      icon: <FaHandHoldingDollar />,
-    },
-    {
-      label: 'Pick Operator',
-      href: '/pages/pickOperator',
-      icon: <IoPersonCircle />,
-    },
-    { label: 'Schedule Call', href: '/pages/scheduleCall', icon: <IoCall /> },
-    {
-      label: 'User Payment',
-      href: '/pages/userPayment',
-      icon: <FaCommentDollar />,
-    },
-    {
-      label: 'Approve Payment',
-      href: '/pages/approvePayment',
-      icon: <MdVerified />,
-    },
-  ]
+  const { status, data: session } = useSession()
 
   return (
     <nav className='flex h-full flex-col'>
@@ -49,8 +25,6 @@ const NavBar = () => {
         Dashboard
       </Heading>
       <div className='mb-[5rem] mt-4 flex flex-col'>
-        {' '}
-        {/* Make this take remaining space */}
         {links.map((link) => (
           <Link
             key={link.href}
@@ -74,9 +48,29 @@ const NavBar = () => {
           </Link>
         ))}
       </div>
-      <Button className='mt-auto w-full'>
-        <Link href='/login'>Login</Link>
-      </Button>
+      <div className='mb-auto flex w-full items-center justify-center rounded-md bg-violet-600 px-4 py-2 text-white shadow-sm transition duration-200 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2'>
+        {status === 'unauthenticated' ? (
+          <Link href='/api/auth/signin'>Login</Link>
+        ) : (
+          <Box>
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger className='text-xl font-bold text-white'>
+                <Text size='2'>{session?.user?.name || 'Loading ...'}</Text>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content>
+                <DropdownMenu.Label>
+                  <Text className='text-gray-500' size='2'>
+                    {session?.user?.email || 'Email'}
+                  </Text>
+                </DropdownMenu.Label>
+                <DropdownMenu.Item asChild>
+                  <Link href='/api/auth/signout'>Logout</Link>
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Root>
+          </Box>
+        )}
+      </div>
     </nav>
   )
 }

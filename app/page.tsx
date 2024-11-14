@@ -1,5 +1,12 @@
+import { getServerSession } from 'next-auth'
 import Image from 'next/image'
+import { authOptions } from './api/auth/[...nextauth]/route'
 
-export default function Home() {
-  return <div className='m-10 p-4 text-blue-400'>hello world</div>
+export default async function Home() {
+  const session = await getServerSession(authOptions)
+  return (
+    <div className='m-10 p-4 text-5xl font-bold text-black'>
+      hello {session && <span>{session.user!.name}</span>}
+    </div>
+  )
 }

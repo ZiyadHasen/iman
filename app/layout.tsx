@@ -4,6 +4,7 @@ import localFont from 'next/font/local'
 import './globals.css'
 import { Theme } from '@radix-ui/themes'
 import NavBar from './NavBar'
+import AuthProvider from './auth/Provider'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -31,15 +32,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Theme accentColor='violet'>
-          <div className='grid h-screen grid-cols-5'>
-            <aside className='col-span-1 bg-gray-100 p-4'>
-              <NavBar />
-            </aside>
+        <AuthProvider>
+          <Theme accentColor='violet'>
+            <div className='grid h-screen grid-cols-5'>
+              <aside className='col-span-1 bg-gray-100 p-4'>
+                <NavBar />
+              </aside>
 
-            <main className='col-span-4 p-5'>{children}</main>
-          </div>
-        </Theme>
+              <main className='col-span-4 p-5'>{children}</main>
+            </div>
+          </Theme>
+        </AuthProvider>
       </body>
     </html>
   )
