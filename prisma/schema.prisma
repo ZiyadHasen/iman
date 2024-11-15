@@ -1,54 +1,88 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// This is your Prisma schema file
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-js" // Specifies the Prisma Client as the output
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "mysql"             // Specifies MySQL as the database type
+  url      = env("DATABASE_URL") // Reads the connection string from the environment
 }
+
+// Enum for tracking the status of calls
 enum Status {
-  SUCCESSFULLY_NOTICED
-  NOT_ANSWERED
-  NOT_CALLED
-  SUCCESSFULLY_SUBMITTED
+  SUCCESSFULLY_NOTICED           // Call was noticed successfully
+  NOT_ANSWERED                   // Call was made, but not answered
+  NOT_CALLED                     // Call has not yet been made
+  SUCCESSFULLY_SUBMITTED         // Submission after the call was successful
 }
-// User model
-model Member {
-  id          Int       @id @default(autoincrement())  // Unique identifier for each user
-  name        String
-  phoneNumber1 String
-  phoneNumber2 String
-  payingStyle  String
-  
-  email       String    @unique
-  status      Status    @default(NOT_CALLED)           // Enum for call status
-  description String?                                  // Optional: Explanation of why the call didn’t work
-  lastCalled  DateTime? @default(now())                // Date when the volunteer was last called
-  role        String    @default(" Member") 
+// Enum for making role
+enum Role {
+  USER
+  ADMIN
+  OPERATOR
 }
 
-// Admin model
-model Admin {
-  id          Int       @id @default(autoincrement())  // Unique identifier for each admin
-  name        String
-  phoneNumber String
-  email       String    @unique
-  password    String
-  role        String    @default("ADMIN")              // Role: set default value to "ADMIN"
+
+// Unified User model (combines Member and Google OAuth User fields)
+model User {
+  id             String   @id @default(cuid())     // Unique identifier
+  name           String?                            // User's name
+  email          String? @unique                   // User's email
+  emailVerified  DateTime?                        // Email verification timestamp
+  image          String?                            // Profile image URL
+
+  phoneNumber1   String?                           // Primary phone number
+  phoneNumber2   String?                           // Secondary phone number
+  payingStyle    String?                           // Payment style description
+  status         Status   @default(NOT_CALLED)    // Call status
+  description    String?                           // Reason for unsuccessful calls
+  lastCalled     DateTime? @default(now())         // Last call timestamp
+  role           Role     @default(USER)          // User's role (enum)
+
+  // Relations
+  accounts       Account[]                         // Relation to OAuth accounts
+  sessions       Session[]                         // Relation to sessions
 }
 
-// Operator model
-model Operator {
-  id          Int       @id @default(autoincrement())  // Unique identifier for each operator
-  name        String
-  phoneNumber String
-  email       String    @unique
-  password    String
-  role        String    @default("OPERATOR")           // Role: set default value to "OPERATOR"
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId], map: "accounts_user_id_fkey")
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "sessions_user_id_fkey")
+  @@map("sessions")
+}
+
+
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }
