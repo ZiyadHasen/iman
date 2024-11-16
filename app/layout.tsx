@@ -33,7 +33,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          <Theme accentColor='violet'>
+          <Theme accentColor='jade'>
             <div className='grid h-screen grid-cols-5'>
               <aside className='col-span-1 bg-gray-100 p-4'>
                 <NavBar />

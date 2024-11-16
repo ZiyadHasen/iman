@@ -37,6 +37,7 @@ model User {
   status         Status   @default(NOT_CALLED)    // Call status
   description    String?                           // Reason for unsuccessful calls
   lastCalled     DateTime? @default(now())         // Last call timestamp
+  password       String?                             // Hashed password field
   role           Role     @default(USER)          // User's role (enum)
 
   // Relations

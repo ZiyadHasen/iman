@@ -1,12 +1,4 @@
-import {
-  Container,
-  Heading,
-  Text,
-  TextField,
-  Button,
-  Select,
-} from '@radix-ui/themes'
-import React from 'react'
+import { Button, Heading, Select, Text, TextField } from '@radix-ui/themes'
 
 const AddUserForm = () => {
   return (
