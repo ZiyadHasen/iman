@@ -6,7 +6,7 @@ const AddUserForm = () => {
       <div className='w-full max-w-3xl rounded-lg bg-gray-100 p-6 shadow-md'>
         <Heading className='mb-8 text-center'>Add New Member</Heading>
         <form className='space-y-4'>
-          <div>
+          <div className='w-3/4'>
             <Text className='mb-2' size='2'>
               Full Name
             </Text>

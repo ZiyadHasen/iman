@@ -1,30 +1,53 @@
 import prisma from '@/prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
-import { z } from 'zod'
+import { RegisterSchema } from '@/app/validationSchema'
 import bcrypt from 'bcrypt'
 
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(5),
-})
 export async function POST(request: NextRequest) {
-  const body = await request.json()
-  const validation = schema.safeParse(body)
-  if (!validation.success)
-    return NextResponse.json(validation.error.errors, { status: 400 })
+  try {
+    const body = await request.json()
 
-  const user = await prisma.user.findUnique({ where: { email: body.email } })
+    // Validate input
+    const validation = RegisterSchema.safeParse(body)
+    if (!validation.success) {
+      const errors = validation.error.errors.map((err) => ({
+        field: err.path[0],
+        message: err.message,
+      }))
+      return NextResponse.json({ errors }, { status: 400 })
+    }
 
-  if (user)
-    return NextResponse.json({ error: 'User already exists' }, { status: 400 })
+    const { email, password, name, phoneNumber1, phoneNumber2 } = body
 
-  const password = await bcrypt.hash(body.password, 10)
-  const newUser = await prisma.user.create({
-    data: {
-      email: body.email,
-      password,
-    },
-  })
+    // Check if user already exists
+    const userExists = await prisma.user.findUnique({ where: { email } })
+    if (userExists) {
+      return NextResponse.json(
+        { error: 'User already exists' },
+        { status: 400 },
+      )
+    }
 
-  return NextResponse.json({ email: newUser.email })
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    // Create user
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        name,
+        phoneNumber1,
+        phoneNumber2,
+      },
+    })
+
+    return NextResponse.json({ message: 'User registered successfully' })
+  } catch (error) {
+    console.error('Error in user registration:', error)
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 },
+    )
+  }
 }

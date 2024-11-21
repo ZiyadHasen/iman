@@ -10,10 +10,8 @@ datasource db {
 
 // Enum for tracking the status of calls
 enum Status {
-  SUCCESSFULLY_NOTICED           // Call was noticed successfully
-  NOT_ANSWERED                   // Call was made, but not answered
-  NOT_CALLED                     // Call has not yet been made
-  SUCCESSFULLY_SUBMITTED         // Submission after the call was successful
+ ACTIVE
+ NOT_ACTIVE
 }
 // Enum for making role
 enum Role {
@@ -34,7 +32,7 @@ model User {
   phoneNumber1   String?                           // Primary phone number
   phoneNumber2   String?                           // Secondary phone number
   payingStyle    String?                           // Payment style description
-  status         Status   @default(NOT_CALLED)    // Call status
+  status         Status   @default(ACTIVE)    // Call status
   description    String?                           // Reason for unsuccessful calls
   lastCalled     DateTime? @default(now())         // Last call timestamp
   password       String?                             // Hashed password field
