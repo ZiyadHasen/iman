@@ -1,6 +1,7 @@
 import { Badge, Button, Table } from '@radix-ui/themes'
 import Link from 'next/link'
 import React from 'react'
+import { DummyTableData } from '@/assets/dummyTableData'
 
 const usersTable = () => {
   return (
@@ -20,78 +21,7 @@ const usersTable = () => {
         </Table.Header>
 
         <Table.Body>
-          {[
-            {
-              name: 'Ziyad Hasen',
-              phone: '0988662403',
-              role: 'operator',
-              status: 'active',
-              frequency: 'Quarterly',
-            },
-            {
-              name: 'John Doe',
-              phone: '0988662404',
-              role: 'member',
-              status: 'not active',
-              frequency: 'Monthly',
-            },
-            {
-              name: 'Jane Smith',
-              phone: '0988662405',
-              role: 'operator',
-              status: 'active',
-              frequency: 'Weekly',
-            },
-            {
-              name: 'Emily Davis',
-              phone: '0988662406',
-              role: 'member',
-              status: 'active',
-              frequency: 'Annually',
-            },
-            {
-              name: 'Michael Brown',
-              phone: '0988662407',
-              role: 'operator',
-              status: 'not active',
-              frequency: 'Quarterly',
-            },
-            {
-              name: 'Sarah Wilson',
-              phone: '0988662408',
-              role: 'member',
-              status: 'active',
-              frequency: 'Monthly',
-            },
-            {
-              name: 'David Johnson',
-              phone: '0988662409',
-              role: 'operator',
-              status: 'active',
-              frequency: 'Weekly',
-            },
-            {
-              name: 'Emma Taylor',
-              phone: '0988662410',
-              role: 'member',
-              status: 'not active',
-              frequency: 'Annually',
-            },
-            {
-              name: 'Daniel Lee',
-              phone: '0988662411',
-              role: 'operator',
-              status: 'active',
-              frequency: 'Quarterly',
-            },
-            {
-              name: 'Olivia Harris',
-              phone: '0988662412',
-              role: 'member',
-              status: 'active',
-              frequency: 'Monthly',
-            },
-          ].map((user, index) => (
+          {DummyTableData.map((user, index) => (
             <Table.Row key={index}>
               <Table.RowHeaderCell>{user.name}</Table.RowHeaderCell>
               <Table.Cell>{user.phone}</Table.Cell>

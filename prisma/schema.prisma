@@ -23,25 +23,25 @@ enum Role {
 
 // Unified User model (combines Member and Google OAuth User fields)
 model User {
-  id             String   @id @default(cuid())     // Unique identifier
+  id             String   @id @default(cuid())      // Unique identifier
   name           String?                            // User's name
-  email          String? @unique                   // User's email
-  emailVerified  DateTime?                        // Email verification timestamp
+  email          String?  @unique                   // User's email
+  emailVerified  DateTime?                          // Email verification timestamp
   image          String?                            // Profile image URL
 
-  phoneNumber1   String?                           // Primary phone number
-  phoneNumber2   String?                           // Secondary phone number
-  payingStyle    String?                           // Payment style description
-  status         Status   @default(ACTIVE)    // Call status
-  description    String?                           // Reason for unsuccessful calls
-  lastCalled     DateTime? @default(now())         // Last call timestamp
-  password       String?                             // Hashed password field
-  role           Role     @default(USER)          // User's role (enum)
+  phoneNumber1   String?                            // Primary phone number
+  phoneNumber2   String?                            // Secondary phone number
+  payingStyle    String?                            // Payment style description
+  status         Status    @default(ACTIVE)         // Call status
+  description    String?                            // Reason for unsuccessful calls
+  lastCalled     DateTime? @default(now())          // Last call timestamp
+  password       String?                            // Hashed password field
+  role           Role      @default(USER)           // User's role (enum)
 
   // Relations
   accounts       Account[]                         // Relation to OAuth accounts
   sessions       Session[]                         // Relation to sessions
-}
+}    
 
 
 model Account {
