@@ -8,9 +8,7 @@ import {
   ScrollArea,
   Select,
   Text,
-  TextField,
 } from '@radix-ui/themes'
-import { CiSearch } from 'react-icons/ci'
 
 const PickOperatorForm = () => {
   return (
@@ -69,7 +67,7 @@ const PickOperatorForm = () => {
       </div>
       <div className='mt-8 flex justify-between'>
         <div className='flex items-center gap-2'>
-          <div>Selected Operator :</div>
+          <div>Selected Users :</div>
           <div className='font-medium text-blue-600'>100</div>
         </div>
         {/* the select operator field  */}

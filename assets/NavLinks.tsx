@@ -16,8 +16,8 @@ export const links = [
     icon: <FaHandHoldingDollar />,
   },
   {
-    label: 'Pick Operator',
-    href: '/pages/pickOperator',
+    label: 'Assigned Calls',
+    href: '/pages/assignedUser',
     icon: <IoPersonCircle />,
   },
   { label: 'Schedule Call', href: '/pages/scheduleCall', icon: <IoCall /> },
