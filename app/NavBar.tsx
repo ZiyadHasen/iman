@@ -1,31 +1,39 @@
 'use client'
-import {
-  Avatar,
-  Box,
-  Button,
-  DropdownMenu,
-  Heading,
-  Text,
-} from '@radix-ui/themes'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import React from 'react'
+import { links } from '@/assets/NavLinks'
+import { Box, DropdownMenu, Heading, Text } from '@radix-ui/themes'
 import classNames from 'classnames'
 import { useSession } from 'next-auth/react'
-import { links } from '@/assets/NavLinks'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 const NavBar = () => {
   const currentPath = usePathname()
   const { status, data: session } = useSession()
+  if (session) {
+    console.log(session.user.role)
+  }
+
+  // Handle loading state
+  if (status === 'loading') {
+    return <div>Loading...</div> // Render a loading indicator or placeholder
+  }
+
+  let userRole = 'ADMIN' // Default role if session is not available
+
+  if (session && session.user && session.user.role) {
+    userRole = session.user.role
+  }
+
+  const filteredLinks = links.filter((link) => link.roles.includes(userRole))
 
   return (
-    <nav className='flex h-full flex-col'>
+    <div className='flex h-full flex-col'>
       <Heading className='flex justify-center border-b py-6 text-center'>
         Admin <br />
         Dashboard
       </Heading>
       <div className='mb-[5rem] mt-4 flex flex-col'>
-        {links.map((link) => (
+        {filteredLinks.map((link) => (
           <Link
             key={link.href}
             href={link.href}
@@ -55,7 +63,7 @@ const NavBar = () => {
           <Box>
             <DropdownMenu.Root>
               <DropdownMenu.Trigger className='text-xl font-bold text-white'>
-                <Text size='2'>{session?.user?.name || 'Loading ...'}</Text>
+                <Text size='2'>{session?.user?.name || 'Loading...'}</Text>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content>
                 <DropdownMenu.Label>
@@ -71,7 +79,7 @@ const NavBar = () => {
           </Box>
         )}
       </div>
-    </nav>
+    </div>
   )
 }
 

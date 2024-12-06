@@ -4,6 +4,7 @@ import NextAuth, { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import CredentialsProvider from 'next-auth/providers/credentials' // Correct import
 import bcrypt from 'bcryptjs' // Import bcrypt for password hashing
+import { Role } from '@/types/next-auth'
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -41,6 +42,7 @@ export const authOptions: NextAuthOptions = {
           user.password!,
         )
 
+        // Return user object if valid, else null
         return isValid ? user : null
       },
     }),
@@ -50,7 +52,21 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    strategy: 'jwt',
+    strategy: 'jwt', // Use JWT-based sessions
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id
+        token.role = user.role // Add role to JWT
+      }
+      return token
+    },
+    async session({ session, token }) {
+      session.user.id = token.id as string // Add user ID
+      session.user.role = token.role as Role // Add role
+      return session
+    },
   },
 }
 

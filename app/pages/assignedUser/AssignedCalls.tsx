@@ -115,7 +115,6 @@ const AssignedCalls = () => {
               <Text as='div' size='3' weight='bold' className='my-5'>
                 Assigned users
               </Text>
-
               {/* Dynamic Two-Column Numbered List */}
               <div className='grid grid-cols-2 gap-4'>
                 {names.map((task, index) => (
