@@ -17,7 +17,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ errors }, { status: 400 })
     }
 
-    const { email, password, name, phoneNumber1, phoneNumber2 } = body
+    // Destructure the body
+    const {
+      email,
+      password,
+      name,
+      phoneNumber1,
+      phoneNumber2,
+      location,
+      role,
+      payingStyle,
+      amount,
+    } = body
+
+    console.log(role)
 
     // Check if user already exists
     const userExists = await prisma.user.findUnique({ where: { email } })
@@ -29,17 +42,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10)
+    // const hashedPassword = await bcrypt.hash(password, 10)
 
-    // Create user with default role
+    // Create user with default role and additional fields like location and payingStyle
     const newUser = await prisma.user.create({
       data: {
         email,
-        password: hashedPassword,
+        // password: hashedPassword,
         name,
         phoneNumber1,
         phoneNumber2,
-        role: 'USER', // Default role
+        location,
+        role,
+        payingStyle,
+        amount,
       },
     })
 

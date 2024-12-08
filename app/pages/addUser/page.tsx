@@ -1,11 +1,14 @@
-import AddUserForm from './AddUserForm'
+import React from 'react'
+import RegisterUserForm from './RegisterUserForm'
 
-const AddUserPage = () => (
-  <div className='flex min-h-screen flex-col'>
-    <div className='flex-grow rounded-sm bg-gray-200 p-8 shadow-md'>
-      <AddUserForm />
+const RegisterPage = () => {
+  return (
+    <div className='flex min-h-screen flex-col'>
+      <div className='flex-grow rounded-sm bg-gray-200 p-8 shadow-md'>
+        <RegisterUserForm />
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
-export default AddUserPage
+export default RegisterPage

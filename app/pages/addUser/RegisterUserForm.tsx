@@ -5,6 +5,7 @@ import {
   Button,
   Callout,
   Heading,
+  Select,
   Spinner,
   Text,
   TextField,
@@ -22,9 +23,14 @@ const RegisterUserForm = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(RegisterSchema),
+    defaultValues: {
+      role: 'MEMBER',
+      payingStyle: 'monthly',
+    },
   })
 
   const [error, setError] = useState('') // Global error message
@@ -44,10 +50,12 @@ const RegisterUserForm = () => {
 
   // Submit form handler
   const onSubmit = async (data: RegisterFormData) => {
+    console.log(data)
     try {
       setIsSubmitting(true)
       setError('') // Reset global error before submitting
       await axios.post('/api/register', data)
+
       router.push('/')
     } catch (err) {
       setIsSubmitting(false)
@@ -62,7 +70,7 @@ const RegisterUserForm = () => {
   return (
     <div className='flex min-h-screen items-center justify-center'>
       <div className='w-full max-w-3xl rounded-lg bg-gray-100 p-6 shadow-md'>
-        <Heading className='mb-8 text-center'>Register</Heading>
+        <Heading className='mb-8 text-center'>Register MEMBER</Heading>
 
         {/* Display Global Error */}
         {error && (
@@ -136,7 +144,7 @@ const RegisterUserForm = () => {
               )}
             </div>
           </div>
-
+          {/* third row  */}
           <div className='flex gap-5'>
             {/* Email Field */}
             <div className='flex w-1/2 flex-col'>
@@ -158,33 +166,122 @@ const RegisterUserForm = () => {
                 </Text>
               )}
             </div>
-
-            {/* Password Field */}
+            {/* Location Field */}
             <div className='flex w-1/2 flex-col'>
               <Text className='mb-2' size='2'>
-                Password
+                Location
               </Text>
               <TextField.Root
-                placeholder='password'
+                placeholder='location'
                 radius='large'
-                {...register('password')}
-                onFocus={() => setFirstError('password')} // Set first error field
+                {...register('location')}
+                onFocus={() => setFirstError('location')} // Set first error field
               >
                 <TextField.Slot />
               </TextField.Root>
               {/* Show error only if it's the first error */}
-              {firstError === 'password' && errors.password && (
+              {firstError === 'location' && errors.location && (
                 <Text color='red' as='p' size='2'>
-                  {errors.password.message}
+                  {errors.location.message}
                 </Text>
               )}
             </div>
           </div>
+          {/* fourth row */}
+          <div className='flex gap-5'>
+            {/* paying style Field */}
+            <div className='flex w-1/2 flex-col'>
+              <Text className='mb-2' size='2'>
+                Paying Style
+              </Text>
 
-          <Button className='mt-12'>
-            Register User
-            {isSubmitting && <Spinner />}
-          </Button>
+              <Select.Root
+                size='2'
+                defaultValue='monthly'
+                onValueChange={(value) =>
+                  setValue(
+                    'payingStyle',
+                    value as 'monthly' | 'quarterly' | 'yearly',
+                  )
+                } // Update form value
+                onOpenChange={() => setFirstError('payingStyle')} // Set first error
+              >
+                <Select.Trigger placeholder='Select paying style' />
+                <Select.Content>
+                  <Select.Item value='monthly'>Monthly</Select.Item>
+                  <Select.Item value='quarterly'>Quarterly</Select.Item>
+                  <Select.Item value='yearly'>Yearly</Select.Item>
+                </Select.Content>
+              </Select.Root>
+
+              {/* Show error only if it's the first error */}
+              {firstError === 'payingStyle' && errors.payingStyle && (
+                <Text color='red' as='p' size='2'>
+                  {errors.payingStyle.message}
+                </Text>
+              )}
+            </div>
+
+            {/* Amount Field */}
+            <div className='flex w-1/2 flex-col'>
+              <Text className='mb-2' size='2'>
+                Amount
+              </Text>
+              <TextField.Root radius='large'>
+                <TextField.Slot>
+                  <input
+                    type='number' // Native input for numeric values
+                    placeholder='amount'
+                    className='w-full bg-transparent outline-none' // Ensures it matches Radix styling
+                    {...register('amount', { valueAsNumber: true })} // Register with react-hook-form
+                    onFocus={() => setFirstError('amount')} // Set first error field
+                  />
+                </TextField.Slot>
+              </TextField.Root>
+              {/* Show error only if it's the first error */}
+              {firstError === 'amount' && errors.amount && (
+                <Text color='red' as='p' size='2'>
+                  {errors.amount.message}
+                </Text>
+              )}
+            </div>
+          </div>
+          {/* fifth row which is role */}
+          <div className='flex gap-5'>
+            {/* Email Field */}
+            <div className='flex w-1/2 flex-col'>
+              <Text className='mb-2' size='2'>
+                Role
+              </Text>
+
+              <Select.Root
+                defaultValue='MEMBER'
+                size='2'
+                onValueChange={(value) =>
+                  setValue('role', value as 'OPERATOR' | 'MEMBER')
+                } // Update form value
+                onOpenChange={() => setFirstError('role')} // Set first error
+              >
+                <Select.Trigger placeholder='Select Role' />
+                <Select.Content>
+                  <Select.Item value='MEMBER'>MEMBER</Select.Item>
+                  <Select.Item value='OPERATOR'>Operator</Select.Item>
+                </Select.Content>
+              </Select.Root>
+
+              {/* Show error only if it's the first error */}
+              {firstError === 'role' && errors.role && (
+                <Text color='red' as='p' size='2'>
+                  {errors.role.message}
+                </Text>
+              )}
+            </div>
+          </div>
+          <div className='mt-12 flex items-center justify-center'>
+            <Button style={{ width: '40%' }} size='3' disabled={isSubmitting}>
+              {isSubmitting ? <Spinner /> : 'Register MEMBER'}
+            </Button>
+          </div>
         </form>
       </div>
     </div>

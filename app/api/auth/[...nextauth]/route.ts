@@ -21,6 +21,7 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials, req) {
+        console.log('Attempting to log in with:', credentials)
         // Validate email and password input
         if (!credentials?.email || !credentials?.password) {
           return null
@@ -30,7 +31,7 @@ export const authOptions: NextAuthOptions = {
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         })
-
+        console.log('teh user who attempted it:', user)
         // If user not found, return null
         if (!user) {
           return null
@@ -41,6 +42,7 @@ export const authOptions: NextAuthOptions = {
           credentials.password,
           user.password!,
         )
+        console.log('the user who attempted it password:', isValid)
 
         // Return user object if valid, else null
         return isValid ? user : null

@@ -15,7 +15,7 @@ enum Status {
 }
 // Enum for making role
 enum Role {
-  USER
+  MEMBER
   ADMIN
   OPERATOR
 }
@@ -33,10 +33,11 @@ model User {
   phoneNumber2   String?                            // Secondary phone number
   payingStyle    String?                            // Payment style description
   status         Status    @default(ACTIVE)         // Call status
-  description    String?                            // Reason for unsuccessful calls
-  lastCalled     DateTime? @default(now())          // Last call timestamp
   password       String?                            // Hashed password field
-  role           Role      @default(USER)           // User's role (enum)
+  role           Role      @default(MEMBER)           // User's role (enum)
+
+  amount         Float?                             // Amount (optional)
+  location       String?                            // Location (optional)
 
   // Relations
   accounts       Account[]                         // Relation to OAuth accounts

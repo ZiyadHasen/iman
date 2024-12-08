@@ -9,9 +9,10 @@ import { usePathname } from 'next/navigation'
 const NavBar = () => {
   const currentPath = usePathname()
   const { status, data: session } = useSession()
-  if (session) {
-    console.log(session.user.role)
-  }
+
+  // if (session) {
+  //   console.log(session.user.role)
+  // }
 
   // Handle loading state
   if (status === 'loading') {
