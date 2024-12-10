@@ -1,6 +1,6 @@
 import prisma from '@/prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
-import { RegisterSchema } from '@/app/validationSchema'
+import { RegisterUserSchema } from '@/app/validationSchema'
 import bcrypt from 'bcrypt'
 
 export async function POST(request: NextRequest) {
@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     // Validate input
-    const validation = RegisterSchema.safeParse(body)
+    const validation = RegisterUserSchema.safeParse(body)
     if (!validation.success) {
       const errors = validation.error.errors.map((err) => ({
         field: err.path[0],
@@ -20,17 +20,13 @@ export async function POST(request: NextRequest) {
     // Destructure the body
     const {
       email,
-      password,
       name,
       phoneNumber1,
       phoneNumber2,
       location,
-      role,
       payingStyle,
-      amount,
+      pledgedAmount,
     } = body
-
-    console.log(role)
 
     // Check if user already exists
     const userExists = await prisma.user.findUnique({ where: { email } })
@@ -41,21 +37,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Hash password
+    // Hash password (uncomment when needed)
     // const hashedPassword = await bcrypt.hash(password, 10)
 
-    // Create user with default role and additional fields like location and payingStyle
+    // Create new user in the database
     const newUser = await prisma.user.create({
       data: {
         email,
-        // password: hashedPassword,
+        // password: hashedPassword, // Uncomment and use when ready
         name,
         phoneNumber1,
         phoneNumber2,
         location,
-        role,
         payingStyle,
-        amount,
+        pledgedAmount,
       },
     })
 

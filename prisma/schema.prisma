@@ -25,7 +25,7 @@ model User {
   email          String?    @unique
   emailVerified  DateTime?
   image          String?
-  pledgedAmount Float    // Total amount pledged annually
+  pledgedAmount  Float  ?  // Total amount pledged annually
   phoneNumber1   String?
   phoneNumber2   String?
   payingStyle    PaymentStyle?

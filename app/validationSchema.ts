@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const RegisterSchema = z.object({
+export const RegisterUserSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
 
   name: z
@@ -19,22 +19,31 @@ export const RegisterSchema = z.object({
     })
     .optional(),
 
-  // New Fields
-  payingStyle: z.enum(['monthly', 'quarterly', 'yearly'], {
-    message: 'Paying style must be either "Monthly" or "Yearly".',
+  payingStyle: z.enum(['MONTHLY', 'QUARTERLY', 'YEARLY'], {
+    message: 'Paying style must be either "Monthly" ,"Quarterly" or "Yearly".',
   }),
 
-  amount: z
+  pledgedAmount: z
     .number()
-    .positive({ message: 'Amount must be a positive number.' })
-    .min(100, { message: 'Amount must be at least 100.' }), // You can adjust this based on your business logic.
-
-  role: z.enum(['OPERATOR', 'MEMBER'], {
-    message: 'Invalid role type.',
-  }),
+    .positive({ message: 'PledgedAmount must be a positive number.' })
+    .min(100, { message: 'PledgedAmount must be at least 100.' }), // You can adjust this based on your business logic.
 
   location: z
     .string()
     .min(3, { message: 'Location must be at least 3 characters long.' })
     .max(100, { message: 'Location must not exceed 100 characters.' }),
+})
+
+//! the operator validation
+export const RegisterOperatorSchema = z.object({
+  email: z.string().email({ message: 'Invalid email address.' }),
+
+  name: z
+    .string()
+    .min(5, { message: 'Name must be at least 5 characters long.' })
+    .max(100, { message: 'Name must not exceed 100 characters.' }),
+
+  password: z.string().min(5, {
+    message: 'The length of the password must more that 5 character',
+  }),
 })
