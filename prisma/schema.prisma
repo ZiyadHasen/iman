@@ -1,53 +1,103 @@
-// This is your Prisma schema file
 generator client {
-  provider = "prisma-client-js" // Specifies the Prisma Client as the output
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"             // Specifies MySQL as the database type
-  url      = env("DATABASE_URL") // Reads the connection string from the environment
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-// Enum for tracking the status of calls
+// Enums for status and payment style
 enum Status {
- ACTIVE
- NOT_ACTIVE
-}
-// Enum for making role
-enum Role {
-  MEMBER
-  ADMIN
-  OPERATOR
+  ACTIVE
+  NOT_ACTIVE
 }
 
+enum PaymentStyle {
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
 
-// Unified User model (combines Member and Google OAuth User fields)
 model User {
-  id             String   @id @default(cuid())      // Unique identifier
-  name           String?                            // User's name
-  email          String?  @unique                   // User's email
-  emailVerified  DateTime?                          // Email verification timestamp
-  image          String?                            // Profile image URL
-
-  phoneNumber1   String?                            // Primary phone number
-  phoneNumber2   String?                            // Secondary phone number
-  payingStyle    String?                            // Payment style description
-  status         Status    @default(ACTIVE)         // Call status
-  password       String?                            // Hashed password field
-  role           Role      @default(MEMBER)           // User's role (enum)
-
-  amount         Float?                             // Amount (optional)
-  location       String?                            // Location (optional)
+  id             String     @id @default(cuid())
+  name           String?
+  email          String?    @unique
+  emailVerified  DateTime?
+  image          String?
+  pledgedAmount Float    // Total amount pledged annually
+  phoneNumber1   String?
+  phoneNumber2   String?
+  payingStyle    PaymentStyle?
+  status         Status      @default(ACTIVE)
+  password       String?
+  amount         Float?
+  location       String?
+  months         Month[]     // Relation to the Months table
 
   // Relations
-  accounts       Account[]                         // Relation to OAuth accounts
-  sessions       Session[]                         // Relation to sessions
-}    
+  accounts       Account[]                           // Reverse relation to Account model
+  sessions       Session[]                           // Reverse relation to Session model
+  assignedOperatorId String?                        
+  assignedOperator   Operator? @relation("OperatorMembers", fields: [assignedOperatorId], references: [id])
+                        
+                       
+
+  payments          Payment[]                       
+  callAssignments   CallAssignment[]                
+}
+model Admin {
+  id       String   @id @default(cuid())         // Unique identifier
+  name     String                                // Admin name
+  email    String   @unique                      // Email used for login
+  
+  password String                                // Hashed password
+  createdAt DateTime @default(now())             // Timestamp for when the admin was created
+}
 
 
+model Operator {
+  id       String   @id @default(cuid())
+  name     String                                // Operator name
+  email    String   @unique                      // Email used for login
+  password String                                // Hashed password
+
+  assignedMembers User[] @relation("OperatorMembers") // Matches the relation defined in `User`
+  createdAt DateTime @default(now())             // Timestamp for when the operator was created
+}
+
+
+model Payment {
+  id          String    @id @default(cuid())
+  userId      String                                    // Links Payment to User
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paymentDate DateTime                                 // Date of payment
+  amount      Float                                    // Amount paid
+}
+
+
+model CallAssignment {
+  id         String   @id @default(cuid())
+  userId     String                                 // Links CallAssignment to a User
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade) // Relation to User
+  callDate   DateTime                              // Scheduled date for the call
+  completed  Boolean  @default(false)              // Whether the call was completed
+}
+
+
+model Month {
+  id          String    @id @default(cuid())
+  userId      String                                 // Links to the User
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  month       Int                                      // 1 = January, 2 = February, ...
+  year        Int                                      // Year of the payment
+  paidAmount  Float                                    // Amount paid in this month
+}
+
+// OAuth-related tables
 model Account {
   id                String  @id @default(cuid())
-  userId            String  @map("user_id")
+  user_id           String  @map("user_id")
   type              String
   provider          String
   providerAccountId String  @map("provider_account_id")
@@ -58,25 +108,23 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-  @@index([userId], map: "accounts_user_id_fkey")
+  @@index([user_id], map: "accounts_user_id_fkey")
   @@map("accounts")
 }
 
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique @map("session_token")
-  userId       String   @map("user_id")
+  user_id      String   @map("user_id")
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  @@index([userId], map: "sessions_user_id_fkey")
+  @@index([user_id], map: "sessions_user_id_fkey")
   @@map("sessions")
 }
-
-
 
 model VerificationToken {
   identifier String
